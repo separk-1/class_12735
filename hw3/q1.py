@@ -161,6 +161,34 @@ def compute_design_point(L, lambda_vec, u_star):
     
     return z_star
 
+def compute_importance_measures(L, grad_u_star):
+    """
+    Computes the importance measure in both standard normal space (x) and physical space (z).
+
+    Parameters:
+    - L: Cholesky decomposition matrix (transforms from standard normal space to physical space)
+    - grad_u_star: Gradient of the limit state function at the design point u* (∇g(u*))
+
+    Returns:
+    - gamma_x: Importance measure in x-space (normalized)
+    - gamma_z: Importance measure in z-space (normalized)
+    """
+    # Compute alpha (importance measure in standard normal space)
+    alpha = grad_u_star / np.linalg.norm(grad_u_star)
+
+    # Compute importance measure in x-space
+    S_x = np.diag(np.std(L, axis=1))  # Approximate standard deviation in x-space
+    eta_x = S_x @ np.linalg.inv(L.T) @ alpha
+    gamma_x = eta_x / np.linalg.norm(eta_x)  # Normalize
+
+    # Compute importance measure in z-space
+    S_z = np.diag(np.std(np.exp(L), axis=1))  # Approximate standard deviation in z-space
+    J_xu = L.T  # Transformation from standard normal space
+    J_uz = np.linalg.inv(J_xu)  # Inverse transformation
+    eta_z = S_z @ J_uz.T @ alpha
+    gamma_z = eta_z / np.linalg.norm(eta_z)  # Normalize
+
+    return gamma_x, gamma_z
 
 if __name__ == "__main__":
     results_df = run_form_analysis()
@@ -177,3 +205,10 @@ if __name__ == "__main__":
     # Print the results
     print("Design Point z* in Physical Space:")
     print(np.round(z_star, 3))
+
+    # (i)
+    grad_u_star = [-0.1266, -0.3182, -0.146 ,-0.1253,0.1141]
+    gamma_x, gamma_z = compute_importance_measures(L, grad_u_star)
+
+    print("Importance Measure in x-space:", np.round(gamma_x, 4))
+    print("Importance Measure in z-space:", np.round(gamma_z, 4))
