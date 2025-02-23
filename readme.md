@@ -17,5 +17,3 @@ This course focuses on **probabilistic modeling and risk assessment** for civil 
 - Urban system risk assessment  
 
 Taught by **Prof. Matteo Pozzi**.  
-
-📍 [Course Materials on Canvas](https://www.cmu.edu/canvas/)  
