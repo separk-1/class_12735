@@ -59,5 +59,5 @@ plt.legend(fontsize=12, loc="upper right")
 plt.tight_layout()
 
 # Save and display the plot
-plt.savefig("./results/q1.png", dpi=300, bbox_inches="tight")
+plt.savefig("./results/q1_a_1.png", dpi=300, bbox_inches="tight", transparent=True)
 plt.show()
