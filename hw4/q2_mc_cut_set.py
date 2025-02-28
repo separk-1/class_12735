@@ -48,43 +48,43 @@ def monte_carlo_system_failure_cutsets(n_simulations=1000, failure_prob=0.35):
         # => "component fails" occurs with probability = failure_prob
         states = np.random.rand(6) > failure_prob
         
-        # Define each cut-set event = "해당 컴포넌트들이 전부 고장"이면 1, 아니면 0
-        # states[j] = True (정상), False(고장)이므로,
-        # (1 - states[j]) = 1 이면 고장, 0 이면 정상.
+        # Define each cut-set event = "All these components fail" → 1, otherwise 0
+        # states[j] = True (working), False (failed), so
+        # (1 - states[j]) = 1 means failure, 0 means working.
         
-        # Cut-set #1: C1, C2, C3, C4 모두 fail
+        # Cut-set #1: C1, C2, C3, C4 all fail
         cut_1_fail[i] = (1 - states[0]) * (1 - states[1]) \
                         * (1 - states[2]) * (1 - states[3])
         
-        # Cut-set #2: C1, C2, C3, C5 모두 fail
+        # Cut-set #2: C1, C2, C3, C5 all fail
         cut_2_fail[i] = (1 - states[0]) * (1 - states[1]) \
                         * (1 - states[2]) * (1 - states[4])
         
-        # Cut-set #3: C1, C2, C3, C6 모두 fail
+        # Cut-set #3: C1, C2, C3, C6 all fail
         cut_3_fail[i] = (1 - states[0]) * (1 - states[1]) \
                         * (1 - states[2]) * (1 - states[5])
         
-        # 시스템 고장(= "셋 중 하나라도 발생")을 OR로 계산
+        # System failure (if at least one cut-set fails) is computed using OR
         # => OR(A,B,C) = 1 - (1-A)*(1-B)*(1-C)
         system_fail[i] = 1 - (1 - cut_1_fail[i]) \
                            * (1 - cut_2_fail[i]) \
                            * (1 - cut_3_fail[i])
 
-    # ===== 통계값 계산 =====
-    # 1) 시스템 고장 확률
+    # ===== Compute statistics =====
+    # 1) System failure probability
     system_fail_prob = np.mean(system_fail)
     std_dev = np.std(system_fail, ddof=1)
     coef_var = std_dev / system_fail_prob if system_fail_prob > 0 else 0
 
-    # 2) 개별 컷셋의 고장 확률
+    # 2) Failure probability of each individual cut-set
     p_cut1 = np.mean(cut_1_fail)
     p_cut2 = np.mean(cut_2_fail)
     p_cut3 = np.mean(cut_3_fail)
 
-    # 3) 예: 첫 번째, 두 번째 컷셋의 교집합(동시에 고장)
-    p_cut1_and_2 = np.mean(cut_1_fail * cut_2_fail)  # 둘 다 1인 비율
+    # 3) Intersection probability: both cut-set #1 and #2 fail simultaneously
+    p_cut1_and_2 = np.mean(cut_1_fail * cut_2_fail)  # Proportion where both are 1
     
-    # 4) 두 컷셋의 합집합(OR) 확률 (직접 공식을 적용)
+    # 4) Union probability of two cut-sets (using direct formula)
     #    P(A ∪ B) = P(A) + P(B) - P(A∩B)
     p_cut1_or_2 = p_cut1 + p_cut2 - p_cut1_and_2
 
@@ -93,7 +93,7 @@ def monte_carlo_system_failure_cutsets(n_simulations=1000, failure_prob=0.35):
             p_cut1_and_2, p_cut1_or_2)
 
 
-# ===== 예시 실행 =====
+# ===== Example execution =====
 if __name__ == "__main__":
     (fail_prob, std_dev, cov,
      p_cut1, p_cut2, p_cut3,
