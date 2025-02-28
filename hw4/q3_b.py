@@ -64,7 +64,7 @@ def simulate_bridge_system(n_simulations=10_000, max_bridges=10, budget=20.0):
     # Demand parameters (mean=5, CV=0.6) => Log-normal internal normal mu, sigma
     demand_mean = 5.0
     demand_cv   = 0.6
-    rho_d       = 0.4
+    rho_d       = 0
 
     mu_ln_d, sigma_ln_d = lognormal_params_from_mean_cv(demand_mean, demand_cv)
 
