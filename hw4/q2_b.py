@@ -42,3 +42,12 @@ failure_prob, std_dev, coef_var = monte_carlo_system_reliability()
 print(f"Estimated Failure Probability: {failure_prob:.5f}")
 print(f"Standard Deviation: {std_dev:.5f}")
 print(f"Coefficient of Variation: {coef_var:.5f}")
+
+# Define the failure probability of each component
+P = 0.35
+
+# Compute the system failure probability using the given formula
+P_fail = (P**3) * (1 - (1 - P)**3)
+P_s = 1 - P_fail
+
+print("system failure probability",P_fail)
